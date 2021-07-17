@@ -1,9 +1,6 @@
-import WebSocket from "ws";
-
 interface ISocketClientConfig {
   accessToken?: string;
   baseUrl: string;
-  pingInterval: number;
   retryInterval: number;
   onMessage?: (message: any) => void;
 }
@@ -11,11 +8,9 @@ interface ISocketClientConfig {
 export class SocketClient {
   private config: ISocketClientConfig = {
     baseUrl: `wss://socket.flagbook.sh/ws/`,
-    pingInterval: 5000,
     retryInterval: 1000,
   };
   private ws: WebSocket;
-  private interval: any;
 
   constructor({
     accessToken,
@@ -29,46 +24,40 @@ export class SocketClient {
     this.connect();
   }
 
-  connect() {
+  connect(): void {
     this.ws = new WebSocket(this.config.baseUrl + this.config.accessToken);
-    this.ws.on("open", this.onOpen);
-    this.ws.on("message", this.onMsg);
-    this.ws.on("error", this.onError);
-    this.ws.on("close", this.onClose);
+    this.ws.addEventListener("error", this.onError);
+    this.ws.addEventListener("message", this.onMsg);
+    this.ws.addEventListener("close", this.onClose);
   }
 
-  onOpen = () => {
-    this.ws.ping();
-    this.interval = setInterval(() => this.ws.ping(), this.config.pingInterval);
-  };
-
-  onMsg = (data: string) => {
+  onMsg = ({ data }: { data: string }): void => {
     const decodedMsg = JSON.parse(data);
 
     this.config.onMessage ? this.config.onMessage(decodedMsg) : undefined;
   };
 
-  onError = () => {
+  onError = (): void => {
     console.error(
       `[Flagbook] cannot establish the connection, retrying in ${this.config.retryInterval} ms...`
     );
   };
 
-  onClose = async () => {
-    this.interval = null;
+  onClose = async (): Promise<void> => {
     await new Promise((r) =>
       setTimeout(() => r(true), this.config.retryInterval)
     );
     this.connect();
   };
 
-  encodeMsg(msg: any) {
+  encodeMsg(msg: any): string {
     return JSON.stringify(msg);
   }
 
-  send(msg: any) {
+  send(msg: any): void {
     if (this.ws.readyState !== this.ws.OPEN) {
-      return setTimeout(() => this.send(msg), 10);
+      setTimeout(() => this.send(msg), 10);
+      return;
     }
     const encodedMag = this.encodeMsg(msg);
     this.ws.send(encodedMag);

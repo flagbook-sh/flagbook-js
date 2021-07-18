@@ -9,7 +9,7 @@ declare global {
 window.flagbook = new FlagbookClient({ accessToken: undefined });
 
 export class Flagbook {
-  public static init(config: Config): void {
+  public static init(config: Partial<Config>): void {
     window.flagbook = new FlagbookClient(config);
   }
 

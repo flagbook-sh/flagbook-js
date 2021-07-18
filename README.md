@@ -59,4 +59,3 @@ await Flagbook.getFlagValue('user_edit_view_v2_enabled', [['user_id', 1], ['coun
 ```
 
 Please note that the order of the provided tags matters. The function will return the value assigned to the first found tag from the list.
-```

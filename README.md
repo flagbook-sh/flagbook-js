@@ -28,17 +28,17 @@ When the installation is completed, configure the client providing your **access
 import { Flagbook } from '@flagbook/flagbook-js'
 
 Flagbook.init({
-	// [Required] Your access token
+  // [Required] Your access token
   accessToken: 'XXX',
 
-	// [Optional] Indicates whether the cache layer is enabled in the client. It's strongly recommended to keep this setting enabled. Default: true 
-	cacheEnabled: true,
+  // [Optional] Indicates whether the cache layer is enabled in the client. It's strongly recommended to keep this setting enabled. Default: true 
+  cacheEnabled: true,
 
-	// [Optional] Configures time to live in milliseconds of cache manager. Default: 10000
-	cacheTTL: 10_000,
+  // [Optional] Configures time to live in milliseconds of cache manager. Default: 10000
+  cacheTTL: 10_000,
 
   // [Optional] Specifies the time within which the request to the Flagbook must be made, otherwise an exception is thrown. Default: 5000
-	timeout: 5_000,
+  timeout: 5_000,
 })
 ```
 
@@ -59,4 +59,3 @@ await Flagbook.getFlagValue('user_edit_view_v2_enabled', [['user_id', 1], ['coun
 ```
 
 Please note that the order of the provided tags matters. The function will return the value assigned to the first found tag from the list.
-```

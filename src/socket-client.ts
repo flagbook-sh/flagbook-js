@@ -1,5 +1,5 @@
 interface ISocketClientConfig {
-  accessToken?: string;
+  publicApiKey?: string;
   baseUrl: string;
   retryInterval: number;
   onMessage?: (message: any) => void;
@@ -13,19 +13,19 @@ export class SocketClient {
   private ws: WebSocket;
 
   constructor({
-    accessToken,
+    publicApiKey,
     onMessage,
   }: {
-    accessToken: string;
+    publicApiKey: string;
     onMessage: (message: any) => void;
   }) {
-    this.config.accessToken = accessToken;
+    this.config.publicApiKey = publicApiKey;
     this.config.onMessage = onMessage;
     this.connect();
   }
 
   connect(): void {
-    this.ws = new WebSocket(this.config.baseUrl + this.config.accessToken);
+    this.ws = new WebSocket(this.config.baseUrl + this.config.publicApiKey);
     this.ws.addEventListener("error", this.onError);
     this.ws.addEventListener("message", this.onMsg);
     this.ws.addEventListener("close", this.onClose);
